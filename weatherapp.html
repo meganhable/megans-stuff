@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <link href="src/styles.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <h1>
+      <span id="city"></span>
+      🌥️ Grants Pass <br />
+      <span id="current-temperature">40℉</span>
+    </h1>
+    <h2>
+      <span id="description"></span>
+      Humidity: <span id="humidity"></span>% Wind: <span id="wind"></span> mph
+      <hr />
+      <div class="container">
+        <div class="row">
+          <div class="col">Now</div>
+          <div class="col">10am</div>
+          <div class="col">11am</div>
+          <div class="col">12pm</div>
+          <div class="col">1pm</div>
+          <div class="col">2pm</div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="col">🌥️</div>
+            <div class="col">🌥️</div>
+            <div class="col">🌥️</div>
+            <div class="col">🌥️</div>
+            <div class="col">☀️</div>
+            <div class="col">☀️</div>
+            <div class="container">
+              <div class="row">
+                <div class="col">40℉</div>
+                <div class="col">41℉</div>
+                <div class="col">43℉</div>
+                <div class="col">45℉</div>
+                <div class="col">47℉</div>
+                <div class="col">47℉</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </h2>
+    <br />
+    <h3>Tuesday 16:00</h3>
+    <h4>10-Day Forecast</h4>
+    <p>
+      Today ☀️ 34℉-48℉
+      <br />
+      Sun ☁️ 30℉-44℉
+      <br />
+      Mon 🌧️ 32℉-40℉
+      <br />
+      Tue ☁️ 28℉-41℉
+      <br />
+      Wed 🌧️ 33℉-43℉
+      <br />
+      Thu 🌧️ 32℉-37℉
+      <br />
+      Fri 🌥️ 28℉-38℉
+      <br />
+      Sat 🌧️ 22℉-39℉
+      <br />
+      Sun ☁️ 31℉-41℉
+      <br />
+      Mon ☁️ 28℉-37℉
+    </p>
+
+    <form id="search-form">
+      <input
+        type="text"
+        placeholder="Enter City"
+        autocomplete="off"
+        autofocus="on"
+        id="search-text-input"
+      />
+      <input type="submit" value="Search" />
+    </form>
+    <script src="src/index.js"></script>
+  </body>
+</html>
+body { font-family: sans-serif; } h1 { text-align: center; } h2 { text-align:
+center; } import "./styles.css"; let now = new Date(); let h3 =
+document.querySelector("h3"); let days = [ "Monday", "Tuesday", "Wednesday",
+"Thursday", "Friday", "Saturday", "Sunday" ]; let day = now.getDay(); let hour =
+now.getHours(); let minutes = now.getMinutes(); h3.innerHTML = `${day}
+${hour}:${minutes}`; function search(event) { event.preventDefault(); let
+searchInput = document.querySelector("#search-text-input"); let h1 =
+document.querySelector("h1"); h1.innerHTML = `${searchInput.value}`; } function
+handleCity(event) { event.preventDefault(); let searchInput =
+document.querySelector("#search-text-input"); searchCity(searchInput.value); }
+let form = document.querySelector("#search-form");
+form.addEventListener("submit", handleCity); function searchCity(city) { let
+apiKey = "dbc89cfc120fa39793a3125b6b72ede2"; let apiUrl =
+`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial`;
+axios.get(`${apiUrl}&appid=${apiKey}`).then(showTemperature); } function
+showTemperature(response) { console.log(response); let cityName =
+document.querySelector("#city"); cityName.innerHTML = `${response.data.name}`;
+let temperature = Math.round(response.data.main.temp); let temperatureElement =
+document.querySelector("#current-temperature"); let windElement =
+document.querySelector("#wind"); let humidityElement =
+document.querySelector("#humidity"); let description =
+document.querySelector("#description"); description.innerHTML =
+response.data.weather[0].main; temperatureElement.innerHTML =
+`${temperature}°F`; humidityElement.innerHTML = response.data.main.humidity;
+windElement.innerHTML = response.data.wind.speed; } function
+showDescription(response) { let humidity = document.querySelector("#humidity");
+humidity.innerHTML = $(response.data.main.humidity); let wind =
+document.querySelector("#wind"); wind.innerHTML =
+Math.round(response.data.wind.speed); let h2 = document.querySelector(h2);
+h2.innerHTML = `${humidity}% ${wind}MPH`; } function handlePosition(position) {
+console.log(position.coords.latitude); console.log(position.coords.longitude); }
+navigator.geolocation.getCurrentPosition(handlePosition);
