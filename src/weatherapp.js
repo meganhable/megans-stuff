@@ -1,18 +1,21 @@
 let now = new Date();
 let h3 = document.querySelector("h3");
 let days = [
+  "Sunday",
   "Monday",
   "Tuesday",
   "Wednesday",
   "Thursday",
   "Friday",
   "Saturday",
-  "Sunday",
 ];
 let day = now.getDay();
 let hour = now.getHours();
 let minutes = now.getMinutes();
-h3.innerHTML = `${day}
+if (minutes < 10) {
+  minutes = `0${minutes}`;
+}
+h3.innerHTML = `Last Updated: ${days[day]}
 ${hour}:${minutes}`;
 function search(event) {
   event.preventDefault();
@@ -32,8 +35,9 @@ function searchCity(city) {
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial`;
   axios.get(`${apiUrl}&appid=${apiKey}`).then(showTemperature);
 }
+
 function showTemperature(response) {
-  console.log(response);
+  console.log(response.data);
   let cityName = document.querySelector("#city");
   cityName.innerHTML = `${response.data.name}`;
   let temperature = Math.round(response.data.main.temp);
@@ -45,17 +49,17 @@ function showTemperature(response) {
   temperatureElement.innerHTML = `${temperature}°F`;
   humidityElement.innerHTML = response.data.main.humidity;
   windElement.innerHTML = response.data.wind.speed;
+  let iconElement = document.querySelector("#icon");
+  iconElement.setAttribute(
+    "src",
+    `https://openweathermap.org/img/wn/${response.data.weather[0].icon}.png`
+  );
+  iconElement.setAttribute("alt", response.data.weather[0].description);
 }
-function showDescription(response) {
-  let humidity = document.querySelector("#humidity");
-  humidity.innerHTML = $(response.data.main.humidity);
-  let wind = document.querySelector("#wind");
-  wind.innerHTML = Math.round(response.data.wind.speed);
-  let h2 = document.querySelector(h2);
-  h2.innerHTML = `${humidity}% ${wind}MPH`;
-}
+
 function handlePosition(position) {
   console.log(position.coords.latitude);
   console.log(position.coords.longitude);
 }
 navigator.geolocation.getCurrentPosition(handlePosition);
+searchCity("Grants Pass");
