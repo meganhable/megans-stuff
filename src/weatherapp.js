@@ -17,7 +17,8 @@ if (minutes < 10) {
 }
 h3.innerHTML = `Last Updated: ${days[day]}
 ${hour}:${minutes}`;
-function displayForecast() {
+function displayForecast(response) {
+  console.log(response.data);
   let forecastElement = document.querySelector("#forecast");
   let forecastHTML = `<div class = "row">`;
   forecastHTML =
@@ -77,9 +78,16 @@ function handleCity(event) {
 let form = document.querySelector("#search-form");
 form.addEventListener("submit", handleCity);
 function searchCity(city) {
-  let apiKey = "dbc89cfc120fa39793a3125b6b72ede2";
+  let apiKey = "50fa4024e3b1d5eac2f51ab18a47e997";
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial`;
   axios.get(`${apiUrl}&appid=${apiKey}`).then(showTemperature);
+}
+function getForcast(coordinates) {
+  console.log(coordinates);
+  apiKey = "50fa4024e3b1d5eac2f51ab18a47e997";
+  let apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&exclude={part}&appid=${apiKey}&units=imperial`;
+  console.log(apiUrl);
+  axios.get(apiUrl).then(displayForecast);
 }
 
 function showTemperature(response) {
@@ -101,6 +109,7 @@ function showTemperature(response) {
     `https://openweathermap.org/img/wn/${response.data.weather[0].icon}.png`
   );
   iconElement.setAttribute("alt", response.data.weather[0].description);
+  getForcast(response.data.coord);
 }
 
 function handlePosition(position) {
@@ -109,4 +118,3 @@ function handlePosition(position) {
 }
 navigator.geolocation.getCurrentPosition(handlePosition);
 searchCity("Grants Pass");
-displayForecast();
