@@ -17,62 +17,42 @@ if (minutes < 10) {
 }
 h3.innerHTML = `Last Updated: ${days[day]}
 ${hour}:${minutes}`;
+
 function displayForecast(response) {
-  console.log(response.data);
+  let forecast = response.data.daily;
   let forecastElement = document.querySelector("#forecast");
-  let forecastHTML = `<div class = "row">`;
-  forecastHTML =
-    forecastHTML +
-    `  
-    <div class = "col-2">
-      <div class = "weather-forecast-date">
-      Fri
-      </div>
-      <img src = "https://openweathermap.org/img/wn/10d@2x.png"
-      alt = ""
-      width = "38"
-      />
-      <div class = "weather-forecast-temperatures">
-        <span class = "weather-forecast-temperatures-max">
-      18℉ </span>
-      <span class = "weather-forecast-temperature-min">
-      12℉</span>
-    </div>
-    <div class = "col-2">
-    </div>
-    
-</div>`;
-  forecastHTML =
-    forecastHTML +
-    `  
-    <div class = "col-2">
-      <div class = "weather-forecast-date">
-      Fri
-      </div>
-      <img src = "https://openweathermap.org/img/wn/10d@2x.png"
-      alt = ""
-      width = "38"
-      />
-      <div class = "weather-forecast-temperatures">
-        <span class = "weather-forecast-temperatures-max">
-      18℉ </span>
-      <span class = "weather-forecast-temperature-min">
-      12℉</span>
-      </div>
-    </div>`;
+  let forecastHTML = `<div class="row">`;
+  forecast.forEach(function (forecastDay, index) {
+    if (index < 6) {
+      forecastHTML =
+        forecastHTML +
+        `<div class="col-2">
+          <div class="weather-forecast-date">${new Date(
+            forecastDay.dt * 1000
+          ).toLocaleDateString("en-US", { weekday: "short" })}
+          </div>
+          <img src="https://openweathermap.org/img/wn/${
+            forecastDay.weather[0].icon
+          }@2x.png"
+          alt=""
+          width="38"
+          />
+          <div class="weather-forecast-temperatures">
+            <span class="weather-forecast-temperatures-max">
+          ${Math.round(forecastDay.temp.max)}°</span>
+          <span class="weather-forecast-temperature-min">
+          ${Math.round(forecastDay.temp.min)}°</span>
+          </div>
+        </div>`;
+    }
+  });
   forecastHTML = forecastHTML + `</div>`;
   forecastElement.innerHTML = forecastHTML;
 }
 
-function search(event) {
-  event.preventDefault();
-  let searchInput = document.querySelector("#search-text-input");
-  let h1 = document.querySelector("h1");
-  h1.innerHTML = `${searchInput.value}`;
-}
 function handleCity(event) {
   event.preventDefault();
-  let searchInput = document.querySelector("#search-text-input");
+  let searchInput = document.querySelector("#city-input");
   searchCity(searchInput.value);
 }
 let form = document.querySelector("#search-form");
